@@ -1,0 +1,62 @@
+﻿@inherits LayoutComponentBase
+
+
+<PageTitle>NaturalStones</PageTitle>
+<RadzenDialog />
+<RadzenNotification />
+<RadzenTooltip />
+<RadzenContextMenu />
+<RadzenLayout>
+    <RadzenHeader>
+        <RadzenStack Orientation="Radzen.Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0">
+            <RadzenSidebarToggle Click="@(() => sidebarExpanded = !sidebarExpanded)" />
+            <RadzenLabel Text="Header" />
+        </RadzenStack>
+    </RadzenHeader>
+    <RadzenSidebar Responsive="false" Style="width: max-content">
+        <RadzenPanelMenu DisplayStyle="@(sidebarExpanded ? MenuItemDisplayStyle.IconAndText : MenuItemDisplayStyle.Icon)" ShowArrow="false">
+            <RadzenPanelMenuItem Text="Home" Icon="home" />
+            <RadzenPanelMenuItem Text="Gallery" Path="/admin/gallery" Icon="dashboard" />
+            <RadzenPanelMenuItem Text="Product" Icon="store">
+                <RadzenPanelMenuItem class="path-menu" Path="/admin/products/add-new" Text="Add product" Icon="add_business" />
+                <RadzenPanelMenuItem class="path-menu" Path="/admin/products" Text="List products" Icon="list" />
+                <RadzenPanelMenuItem class="path-menu" Path="/admin/categories" Text="List categories" Icon="category" />
+            </RadzenPanelMenuItem>
+            <RadzenPanelMenuItem Text="Blogs" Icon="auto_awesome">
+                <RadzenPanelMenuItem class="path-menu" Path="/admin/blogs/add-new" Text="Add blog" Icon="add" />
+                <RadzenPanelMenuItem class="path-menu" Path="/admin/blogs" Text="List blogs" Icon="list" />
+            </RadzenPanelMenuItem>
+        </RadzenPanelMenu>
+    </RadzenSidebar>
+    <RadzenBody>
+        <div class="rz-p-4">
+            @Body
+        </div>
+    </RadzenBody>
+</RadzenLayout>
+
+<style>
+    .path-menu a, .path-menu i {
+        background-color: white !important;
+        color: #757575 !important;
+    }
+
+        .path-menu a:hover, .path-menu i:hover {
+            color: black !important;
+        }
+
+    .path-menu li:hover, .path-menu div:hover {
+        background-color: #f5f5f5 !important;
+    }
+</style>
+
+@code {
+    bool sidebarExpanded = true;
+
+}
+
+<style>
+    #watermark {
+        display: none !important;
+    }
+</style>

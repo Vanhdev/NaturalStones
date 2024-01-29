@@ -1,0 +1,84 @@
+﻿@page "/blogs/{ID}"
+
+<PageTitle>Blog Detail</PageTitle>
+
+@if (blog == null)
+{
+    <div id="ju-loading-screen">
+        <div class="sk-double-bounce">
+            <div class="sk-child sk-double-bounce1"></div>
+            <div class="sk-child sk-double-bounce2"></div>
+        </div>
+    </div>
+}
+else
+{
+    <!-- Start Breadcrumbs -->
+    <div class="fables-light-background-color">
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol class="fables-breadcrumb breadcrumb px-0 py-3">
+                    <li class="breadcrumb-item"><a href="/" class="fables-second-text-color">Home</a></li>
+                    <li class="breadcrumb-item"><a href="/blogs" class="fables-second-text-color">Blogs</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">@blog.Title</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    <!-- /End Breadcrumbs -->
+    <!-- Start page content -->
+    <div class="container">
+        <div class="my-4 my-lg-4">
+            <div class="nav-0 single-blog" style="margin-bottom:20px;">
+                <div>
+                    <a>
+                        <img src="@blog.ImageUrl" alt="" class="w-100">
+                    </a>
+                </div>
+            </div>
+            <h2 class="font-23 semi-font text-center"><a class="fables-main-text-color fables-second-hover-color">@blog.Title</a></h2>
+            <div class="fables-forth-text-color fables-blog-date">
+                <div class="row">
+                    <div class="col-12 col-md-9 col-lg-10 pt-2">
+                        <span class="fables-icondata fables-second-text-color mr-1"></span>
+                        <span class="mr-3">@String.Format("{0:dd MMMM, yyyy}", blog.PublishTime) </span>
+                    </div>
+                </div>
+
+            </div>
+            <div style="margin-top:20px;">
+                @((MarkupString)blog.Content)
+            </div>
+        </div>
+
+        <div class="my-4 my-lg-5 text-center">
+            <a href="/blogs"
+               class="fables-forth-text-color fables-second-hover-color page-a fables-third-background-color px-4 px-md-5 py-3">
+                <span class="underline">More blogs</span>
+                <span class="fables-iconarrow-right"></span>
+            </a>
+        </div>
+
+    </div>
+    <!-- /End page content -->
+}
+
+
+@code {
+    [Parameter]
+    public string? ID { get; set; }
+
+    protected Document blog;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        if (ID != null)
+        {
+            blog = DB.Blogs.Find(ID);
+
+            StateHasChanged();
+        }
+    }
+}

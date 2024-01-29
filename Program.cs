@@ -1,7 +1,10 @@
+using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.Extensions.FileProviders;
 using NaturalStones.Data;
 using Radzen;
+using Smart.Blazor;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +15,11 @@ builder.Services.AddScoped<ContextMenuService>();
 builder.Services.AddScoped<DialogService>();
 builder.Services.AddScoped<NotificationService>();
 builder.Services.AddScoped<TooltipService>();
-builder.Services.AddRadzenComponents(); 
+builder.Services.AddRadzenComponents();
+builder.Services.AddBlazoredLocalStorage();
+
+builder.Services.AddControllers();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
@@ -25,12 +32,36 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseStaticFiles();
+app.UseStaticFiles(
+    new StaticFileOptions
+    {
+        FileProvider = new PhysicalFileProvider(
+        System.IO.Path.Combine(Directory.GetCurrentDirectory(), "Assets" )),
+        RequestPath = "/Assets"
+    }
+);
+
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Blazor API V1");
+});
 
 app.UseRouting();
 
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
+
+app.MapControllers();
+
+app.UseCors(cors => cors
+.AllowAnyMethod()
+.AllowAnyHeader()
+.SetIsOriginAllowed(origin => true)
+.AllowCredentials()
+);
+
+DB.Start(Environment.CurrentDirectory + "/app_data");
 
 app.Run();

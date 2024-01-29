@@ -1,0 +1,38 @@
+﻿@layout LoginLayout
+@page "/admin/login"
+@using System.Text
+
+<RadzenStack Gap="0" Class="rz-my-12 rz-mx-auto rz-border-radius-6 rz-shadow-10" Style="width: 100%; max-width: 400px; overflow: hidden;">
+    <RadzenCard Class="rz-shadow-0 rz-border-radius-0 rz-background-color-info rz-p-12" style="text-align: center;">
+        <RadzenText TextStyle="TextStyle.DisplayH3" TagName="TagName.H2" Class="rz-color-white rz-mb-0">Login</RadzenText>
+    </RadzenCard>
+    <RadzenCard Class="rz-shadow-0 rz-p-12">
+        <RadzenTemplateForm Data=@("Login")>
+            <RadzenLogin AllowRegister="false" AllowResetPassword="true" Login=@(args => OnLogin(args)) />
+        </RadzenTemplateForm>
+    </RadzenCard>
+</RadzenStack>
+
+@code {
+    protected async Task OnLogin(LoginArgs login)
+    {
+        var admin = DB.Accounts.Find(login.Username);
+        if (admin != null)
+        {
+            var loginAcc = Actors.Account.CreateOne(login.Username, login.Password, string.Empty);
+            if (loginAcc.Password == admin.Password)
+            {
+                var authString = $"{admin.Username.ToMD5()}-{admin.Password.ToMD5()}";
+                var authStringBase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(authString));
+                await localStorage.SetItemAsStringAsync("auth", authStringBase64);
+
+                Navigation.NavigateTo("/admin");
+            }
+        }
+
+        await DialogService.OpenAsync("Login Error", ds =>
+    @<div>
+        Wrong Username or Password!
+    </div>, new DialogOptions() { CloseDialogOnOverlayClick = true });
+    }
+}

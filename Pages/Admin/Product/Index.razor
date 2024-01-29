@@ -1,0 +1,51 @@
+﻿@page "/admin/products"
+@layout AdminLayout
+
+<RadzenButton Click=@OnClick Text="Add new product" ButtonStyle="ButtonStyle.Primary" Style="width:fit-content;margin-bottom:20px" Icon="add" />
+<RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="5" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
+                Data="@products" TItem="Document" ColumnWidth="300px" LogicalFilterOperator="LogicalFilterOperator.Or">
+    <Columns>
+        <RadzenDataGridColumn TItem="Document" Property="ObjectId" Sortable="false" Filterable="false" Title="ID" Frozen="true" Width="80px" TextAlign="TextAlign.Center" />
+        <RadzenDataGridColumn TItem="Document" Property="Name" Title="Product name" Filterable="false" Width="160px" Frozen="true" Sortable="false" TextAlign="TextAlign.Center" />
+        <RadzenDataGridColumn TItem="Document" Property="Category" Title="Category" Filterable="false" Width="80px" Frozen="true" Sortable="false" TextAlign="TextAlign.Center" />
+        <RadzenDataGridColumn TItem="Document" Sortable="false" Filterable="false" Width="80px" Frozen="true">
+            <Template Context="data">
+                <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => UpdateRow(data.ObjectId))" @onclick:stopPropagation="true">
+                </RadzenButton>
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(data.ObjectId))" @onclick:stopPropagation="true">
+                </RadzenButton>
+            </Template>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>
+
+@code {
+    DocumentList products;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        products = DB.Products.SelectAll();
+
+        StateHasChanged();
+    }
+
+    protected void UpdateRow(string ID)
+    {
+        Navigation.NavigateTo($"/admin/products/update/{ID}");
+    }
+
+    protected void DeleteRow(string ID)
+    {
+        DB.Products.Delete(ID);
+        products = DB.Products.SelectAll();
+
+        StateHasChanged();
+    }
+
+    protected void OnClick()
+    {
+        Navigation.NavigateTo("/admin/products/add-new");
+    }
+}

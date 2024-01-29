@@ -1,0 +1,86 @@
+﻿@page "/admin/categories"
+@layout AdminLayout
+
+<RadzenButton Click=@OnClick Text="Add new category" ButtonStyle="ButtonStyle.Primary" Style="width:fit-content;margin-bottom:20px" Icon="add" />
+<RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="5" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
+                Data="@categories" TItem="Document" ColumnWidth="300px" LogicalFilterOperator="LogicalFilterOperator.Or">
+    <Columns>
+        <RadzenDataGridColumn TItem="Document" Property="ObjectId" Sortable="false" Filterable="false" Title="ID" Frozen="true" Width="80px" TextAlign="TextAlign.Center" />
+        <RadzenDataGridColumn TItem="Document" Property="Name" Title="Category name" Filterable="false" Width="160px" Frozen="true" Sortable="false" TextAlign="TextAlign.Center" />
+        <RadzenDataGridColumn TItem="Document" Sortable="false" Filterable="false" Width="80px" Frozen="true">
+            <Template Context="data">
+                <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => UpdateRow(data))" @onclick:stopPropagation="true">
+                </RadzenButton>
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(data.ObjectId))" @onclick:stopPropagation="true">
+                </RadzenButton>
+            </Template>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>
+
+@code {
+    DocumentList categories;
+
+    string Category = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        categories = DB.Categories.SelectAll();
+
+        StateHasChanged();
+    }
+
+    protected async Task UpdateRow(Document doc)
+    {
+        Category = doc.Name;
+        StateHasChanged();
+        var result = await DialogService.OpenAsync("Simple Dialog", (ds) =>
+    @<RadzenStack Gap="1.5rem">
+        <RadzenCard>
+            <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Category name</RadzenText>
+            <RadzenTextBox @bind-Value=@Category Placeholder="Enter category name" class="w-100" aria-label="Gallery type textbox" />
+        </RadzenCard>
+        <RadzenStack Orientation="Radzen.Orientation.Horizontal" Gap="0.5rem" AlignItems="AlignItems.Center">
+            <RadzenButton Text="Save" Click=@(() => SaveCategory(ds)) Style="width: 80px;" />
+        </RadzenStack>
+    </RadzenStack>
+    );
+    }
+
+    protected void DeleteRow(string ID)
+    {
+        DB.Categories.Delete(ID);
+        categories = DB.Categories.SelectAll();
+
+        StateHasChanged();
+    }
+
+    protected async Task OnClick()
+    {
+        Category = "";
+        StateHasChanged();
+        var result = await DialogService.OpenAsync("Simple Dialog", (ds) =>
+    @<RadzenStack Gap="1.5rem">
+        <RadzenCard>
+            <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Category name</RadzenText>
+            <RadzenTextBox @bind-Value=@Category Placeholder="Enter category name" class="w-100" aria-label="Gallery type textbox" />
+        </RadzenCard>
+        <RadzenStack Orientation="Radzen.Orientation.Horizontal" Gap="0.5rem" AlignItems="AlignItems.Center">
+            <RadzenButton Text="Save" Click=@(() => SaveCategory(ds)) Style="width: 80px;" />
+        </RadzenStack>
+    </RadzenStack>
+    );
+    }
+
+    protected void SaveCategory(DialogService ds)
+    {
+        var doc = new Document { ObjectId = Guid.NewGuid().ToString(), Name = Category };
+        DB.Categories.InsertOrUpdate(doc);
+
+        categories = DB.Categories.SelectAll();
+        StateHasChanged();
+        ds.Close(true);
+    }
+}

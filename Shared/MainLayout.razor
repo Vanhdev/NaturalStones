@@ -1,71 +1,275 @@
-ï»¿@inherits LayoutComponentBase
+@inherits LayoutComponentBase
 
 <PageTitle>NaturalStones</PageTitle>
 
-<RadzenContextMenu />
-<RadzenDialog />
-<RadzenNotification />
-<RadzenTooltip />
-
-<RadzenLayout>
-    <RadzenHeader Style="background-color:#000">
-        <div class="top-nav">
-            <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End" Style="max-width:600px; margin:auto">
-                1234567
-            </RadzenStack>
+@if (Email == null || PhoneNumber == null)
+{
+    <div id="ju-loading-screen">
+        <div class="sk-double-bounce">
+            <div class="sk-child sk-double-bounce1"></div>
+            <div class="sk-child sk-double-bounce2"></div>
         </div>
-        <div>
-            <RadzenMenu Class="top-bottom" >
-                <RadzenMenuItem Text="General" Icon="home">
-                    <RadzenMenuItem Text="Buttons" Path="buttons" Icon="account_circle"></RadzenMenuItem>
-                    <RadzenMenuItem Text="Menu" Path="menu" Icon="line_weight"></RadzenMenuItem>
-                    <RadzenMenuItem Text="FileInput" Path="fileinput" Icon="attach_file"></RadzenMenuItem>
-                    <RadzenMenuItem Text="Dialog" Path="dialog" Icon="perm_media"></RadzenMenuItem>
-                    <RadzenMenuItem Text="Notification" Path="notification" Icon="announcement"></RadzenMenuItem>
-                </RadzenMenuItem>
-                <RadzenMenuItem Text="Inputs" Icon="payment">
-                    <RadzenMenuItem Text="CheckBox" Path="checkbox" Icon="check_circle"></RadzenMenuItem>
-                    <RadzenMenuItem Text="TextBox" Path="textbox" Icon="input"></RadzenMenuItem>
-                    <RadzenMenuItem Text="TextArea" Path="textarea" Icon="description"></RadzenMenuItem>
-                    <RadzenMenuItem Text="Password" Path="password" Icon="payment"></RadzenMenuItem>
-                    <RadzenMenuItem Text="Numeric" Path="numeric" Icon="aspect_ratio"></RadzenMenuItem>
-                    <RadzenMenuItem Text="DatePicker" Path="datepicker" Icon="date_range"></RadzenMenuItem>
-                </RadzenMenuItem>
-                <RadzenMenuItem Text="Data" Icon="save">
-                    <RadzenMenuItem Text="DataGrid" Path="datagrid" Icon="grid_on"></RadzenMenuItem>
-                    <RadzenMenuItem Text="DataList" Path="datalist" Icon="list"></RadzenMenuItem>
-                    <RadzenMenuItem Text="DropDown" Path="dropdown" Icon="dns"></RadzenMenuItem>
-                    <RadzenMenuItem Text="DropDownDataGrid" Path="dropdown-datagrid" Icon="receipt"></RadzenMenuItem>
-                    <RadzenMenuItem Text="ListBox" Path="listbox" Icon="view_list"></RadzenMenuItem>
-                    <RadzenMenuItem Text="TemplateForm" Path="templateform" Icon="line_style"></RadzenMenuItem>
-                </RadzenMenuItem>
-                <RadzenMenuItem Text="Containers" Icon="account_box">
-                    <RadzenMenuItem Text="Tabs" Path="tabs" Icon="tab"></RadzenMenuItem>
-                    <RadzenMenuItem Text="Panel" Path="panel" Icon="content_paste"></RadzenMenuItem>
-                    <RadzenMenuItem Text="Fieldset" Path="fieldset" Icon="account_balance_wallet"></RadzenMenuItem>
-                    <RadzenMenuItem Text="Card" Path="card" Icon="line_style"></RadzenMenuItem>
-                </RadzenMenuItem>
-                <RadzenMenuItem Text="More">
-                    <RadzenMenuItem Text="Item1"></RadzenMenuItem>
-                    <RadzenMenuItem Text="Item2"></RadzenMenuItem>
-                    <RadzenMenuItem Text="More items">
-                        <RadzenMenuItem Text="More sub items">
-                            <RadzenMenuItem Text="Item1"></RadzenMenuItem>
-                            <RadzenMenuItem Text="Item2"></RadzenMenuItem>
-                        </RadzenMenuItem>
-                    </RadzenMenuItem>
-                </RadzenMenuItem>
-            </RadzenMenu>
+    </div>
+}
+else
+{
+    <!-- Start Top Header -->
+    <div class="fables-forth-background-color fables-top-header-signin">
+        <div class="container">
+            <div class="row" id="top-row">
+                <div class="col-12 col-sm-4 col-lg-4 text-right">
+                    <a href="#" class="fables-third-text-color font-13 top-nav-info"><span class="fables-iconphone"></span> Phone : @Email </a>
+                </div>
+                <div class="col-12 col-sm-3 col-lg-3 text-center">
+                    <a href="#" class="fables-third-text-color font-13 top-nav-info"><span class="fables-iconemail"></span> Email: @PhoneNumber</a>
+                </div>
+                <div class="col-12 col-sm-5 col-lg-5 text-end">
+                    <a href="/estimate" class="btn fables-second-background-color text-white fables-btn px-5 py-1 font-15">Request a free estimate</a>
+                </div>
+            </div>
         </div>
-    </RadzenHeader>
-    <RadzenBody>
-        @Body
-    </RadzenBody>
-    <RadzenFooter>
+    </div>
+    <!-- /End Top Header -->
+    <!-- Start Fables Navigation -->
+    <div class="fables-navigation fables-main-background-color py-3 py-lg-0">
+        <div class="container">
+            <div class="row">
+                <div>
+                    <nav class="navbar navbar-expand-md btco-hover-menu py-lg-2">
 
-    </RadzenFooter>
-</RadzenLayout>
+                        <a class="navbar-brand pl-0" href="/"><img src="@LogoUrl" alt="Fables Template" class="fables-logo" style="max-height:64px"></a>
+                        <a href="/estimate" class="btn-danger btn-sm top-nav-btn text-white estimate-res">Request a free estimate</a>
+                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#fablesNavDropdown" aria-controls="fablesNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="fables-iconmenu-icon text-white font-16"></span>
+                        </button>
+                        <div class="collapse navbar-collapse" id="fablesNavDropdown">
 
-<style>
+                            <ul class="navbar-nav mx-auto fables-nav">
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link" href="/" id="sub-nav1">
+                                        Home
+                                    </a>
+                                </li>
 
-</style>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" id="sub-nav2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Products
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="sub-nav2">
+                                        <li><a class="dropdown-item" href="/product-1">Product 1</a></li>
+                                        <li><a class="dropdown-item" href="#">Product 2</a></li>
+                                        <li><a class="dropdown-item" href="#">Product3 3</a></li>
+                                    </ul>
+                                </li>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link " href="/faqs" id="sub-nav3">
+                                        FAQs
+                                    </a>
+                                </li>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="/gallery" id="sub-nav4" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Gallery
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="sub-nav4">
+
+                                        <li><a class="dropdown-item" href="/gallery">Gallery 1</a></li>
+                                        <li><a class="dropdown-item" href="#">Gallery 2</a></li>
+                                        <li><a class="dropdown-item" href="#">Before & After</a></li>
+                                    </ul>
+                                </li>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link " href="/testimonials" id="sub-nav5">
+                                        Testimonials
+                                    </a>
+                                </li>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link" href="/specials" id="sub-nav6">
+                                        Specials
+                                    </a>
+                                </li>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link" href="/blogs" id="sub-nav7">
+                                        Blogs
+                                    </a>
+                                </li>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link " href="/contact-us" id="sub-nav8">
+                                        Contact Us
+                                    </a>
+                                </li>
+                            </ul>
+
+                        </div>
+                    </nav>
+                </div>
+                @* <div class="col-12 col-md-2 col-lg-3 pr-md-0 icons-header-mobile">
+
+            <div class="fables-header-icons">
+            <div class="dropdown">
+            <a href="#_" class="fables-third-text-color dropdown-toggle right px-3 px-md-2 px-lg-4 fables-second-hover-color top-header-link max-line-height position-relative" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span class="fables-iconcart-icon font-20"></span>
+            <span class="fables-cart-number fables-second-background-color text-center">3</span>
+            </a>
+
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <div class="p-3 cart-block">
+            <p class="fables-second-text-color semi-font mb-4 font-17">(2) Items in my cart</p>
+            <div class="row mx-0 mb-3">
+            <div class="col-4 p-0">
+            <a href="#"><img src="assets/custom/images/sml1.jpg" alt="" class="w-100"></a>
+            </div>
+            <div class="col-8">
+            <h2><a href="#" class="fables-main-text-color font-13 d-block fables-main-hover-color">LUIS LEATHER DRIVING</a></h2>
+            <p class="fables-second-text-color font-weight-bold">$ 100.00</p>
+            <p class="fables-forth-text-color">QTY : 1</p>
+            </div>
+            </div>
+            <div class="row mx-0 mb-3">
+            <div class="col-4 p-0">
+            <a href="#"><img src="assets/custom/images/sml1.jpg" alt="" class="w-100"></a>
+            </div>
+            <div class="col-8">
+            <h2><a href="#" class="fables-main-text-color font-13 d-block fables-main-hover-color">LUIS LEATHER DRIVING</a></h2>
+            <p class="fables-second-text-color font-weight-bold">$ 100.00</p>
+            <p class="fables-forth-text-color">QTY : 1</p>
+            </div>
+            </div>
+            <span class="font-16 semi-font fables-main-text-color">TOTAL</span>
+            <span class="font-14 semi-font fables-second-text-color float-right">$200.00</span>
+            <hr>
+            <div class="text-center">
+            <a href="#" class="fables-second-background-color fables-btn-rounded  text-center white-color py-2 px-3 font-14 bg-hover-transparent border fables-second-border-color fables-second-hover-color">View my cart</a>
+            <a href="#" class="fables-second-text-color border fables-second-border-color fables-btn-rounded text-center white-color p-2 px-4 font-14 fables-second-hover-background-color">Checkout</a>
+            </div>
+            </div>
+            </div>
+            </div>
+
+
+            <a href="#" class="open-search fables-third-text-color right  top-header-link px-3 px-md-2 px-lg-4 fables-second-hover-color border-0 max-line-height">
+            <span class="fables-iconsearch-icon"></span>
+            </a>
+
+
+            <a href="signin.html" class="fables-third-text-color fables-second-hover-color font-13 top-header-link px-3 px-md-2 px-lg-4 max-line-height"><span class="fables-iconuser"></span></a>
+
+
+
+            </div>
+            </div> *@
+            </div>
+        </div>
+    </div>
+    <!-- /End Fables Navigation -->
+    @Body
+
+    <!-- Start Footer 2 Background Image  -->
+    <div class="fables-footer-image fables-after-overlay white-color py-4 py-lg-5 bg-rules">
+        <div class="container">
+            <div class="row">
+                @* <div class="col-12 col-md-8 offset-md-2 col-lg-6 offset-lg-3 mt-2 mb-5 text-center">
+            <h2 class="font-30 semi-font mb-5">Newsletter</h2>
+            <form class="form-inline position-relative">
+            <div class="form-group fables-subscribe-formgroup">
+            <input type="email" class="form-control fables-subscribe-input fables-btn-rouned" placeholder="Your Email">
+            </div>
+            <button type="submit" class="btn fables-second-background-color fables-btn-rouned fables-subscribe-btn">Subscribe</button>
+            </form>
+
+            </div> *@
+                <div class="col-12 col-lg-4 mb-4 mb-lg-0">
+                    <a href="#" class="fables-second-border-color border-bottom pb-3 d-block mb-3 mt-minus-13"><img src="assets/custom/images/fables-logo.png" alt="fables template"></a>
+                    <p class="font-15 fables-third-text-color">
+                        @Content
+                    </p>
+
+                </div>
+
+                <div class="col-12 col-sm-6 col-lg-4">
+                    <h2 class="font-20 semi-font fables-second-border-color border-bottom pb-3">Contact us</h2>
+                    <div class="my-3">
+                        <h4 class="font-16 semi-font"><span class="fables-iconmap-icon fables-second-text-color pr-2 font-20 mt-1 d-inline-block"></span> Address Information</h4>
+                        <p class="font-14 fables-fifth-text-color mt-2 ml-4">@Address</p>
+                    </div>
+                    <div class="my-3">
+                        <h4 class="font-16 semi-font"><span class="fables-iconphone fables-second-text-color pr-2 font-20 mt-1 d-inline-block"></span> Call Now </h4>
+                        <p class="font-14 fables-fifth-text-color mt-2 ml-4">@PhoneNumber</p>
+                    </div>
+                    <div class="my-3">
+                        <h4 class="font-16 semi-font"><span class="fables-iconemail fables-second-text-color pr-2 font-20 mt-1 d-inline-block"></span> Mail </h4>
+                        <p class="font-14 fables-fifth-text-color mt-2 ml-4">@Email</p>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-lg-4">
+                    <h2 class="font-20 semi-font fables-second-border-color border-bottom pb-3 mb-3">EXPLORE OUR SITE</h2>
+                    <ul class="nav fables-footer-links">
+                        <li><a href="contact-us">Contact Us</a></li>
+                        <li><a href="gallery">Gallery</a></li>
+                        <li><a href="faqs">FAQs</a></li>
+                        <li><a href="blogs">Blog</a></li>
+                        <li><a href="testimonials">Testimonials</a></li>
+                    </ul>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+    <div class="copyright fables-main-background-color mt-0 border-0 white-color">
+        <ul class="nav fables-footer-social-links just-center fables-light-footer-links">
+            <li><a href="#" target="_blank"><i class="fab fa-google-plus-square"></i></a></li>
+            <li><a href="#" target="_blank"><i class="fab fa-facebook"></i></a></li>
+            <li><a href="#" target="_blank"><i class="fab fa-instagram"></i></a></li>
+            <li><a href="#" target="_blank"><i class="fab fa-pinterest-square"></i></a></li>
+            <li><a href="#" target="_blank"><i class="fab fa-twitter-square"></i></a></li>
+            <li><a href="#" target="_blank"><i class="fab fa-linkedin"></i></a></li>
+        </ul>
+        <p class="mb-0">Copyright © 2024. All rights reserved.</p>
+
+    </div>
+}
+
+<!-- /End Footer 2 Background Image -->
+@code
+{
+    private string? Email;
+    private string? PhoneNumber;
+    private string? Address;
+    private string? Content;
+    private string? LogoUrl;
+    protected override void OnInitialized()
+    {
+        var GeneralInfo = DB.PageInfo.Find("layout");
+        if (GeneralInfo.Email != null)
+        {
+            Email = GeneralInfo.Email;
+        }
+        else Email = "Admin@gmail.com";
+
+        if (GeneralInfo.PhoneNumber != null)
+        {
+            PhoneNumber = GeneralInfo.PhoneNumber;
+        }
+        else PhoneNumber = "012345886978";
+
+        if (GeneralInfo.ImageUrl != null)
+        {
+            LogoUrl = GeneralInfo.ImageUrl;
+        }
+        else LogoUrl = "Assets/Images/logo.png";
+
+        if (GeneralInfo.Address != null)
+        {
+            Address = GeneralInfo.Address;
+        }
+        else Address = "Hanoi";
+
+        if (GeneralInfo.Content != null)
+        {
+            Content = GeneralInfo.Content;
+        }
+        else Content = $"t is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters.<br><br>t is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.";
+        StateHasChanged();
+    }
+
+}
