@@ -2,9 +2,9 @@ using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.FileProviders;
+using MudBlazor.Services;
 using NaturalStones.Data;
 using Radzen;
-using Smart.Blazor;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,11 +12,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddScoped<ContextMenuService>();
-builder.Services.AddScoped<DialogService>();
+builder.Services.AddScoped<Radzen.DialogService>();
 builder.Services.AddScoped<NotificationService>();
 builder.Services.AddScoped<TooltipService>();
 builder.Services.AddRadzenComponents();
 builder.Services.AddBlazoredLocalStorage();
+builder.Services.AddMudServices();
 
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen();
@@ -33,6 +34,12 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
+if (!Directory.Exists($"{Directory.GetCurrentDirectory()}/Assets"))
+{
+    Directory.CreateDirectory($"{Directory.GetCurrentDirectory()}/Assets");
+}
+
 app.UseStaticFiles(
     new StaticFileOptions
     {
@@ -45,7 +52,7 @@ app.UseStaticFiles(
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Blazor API V1");
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Natural stones API V1");
 });
 
 app.UseRouting();

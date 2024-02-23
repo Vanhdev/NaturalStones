@@ -2,35 +2,40 @@
 @page "/admin/gallery"
 @inherits Admin
 
-<div class="row">
-    <RadzenButton Click=@OnClick Text="Add new image" ButtonStyle="ButtonStyle.Primary" Style="width:fit-content;margin-bottom:20px" />
-</div>
+<PageTitle>Admin Gallery</PageTitle>
 
-@if (gallery.Count() != 0)
+@if (loggedIn)
 {
-    <div class="container">
-        <div class="gallery-filter">
-            <div class="portfolioContainer mt-4 my-lg-5 row">
-                @foreach (var item in gallery)
-                {
-                    <div class="col-sm-6 col-md-3 mb-4">
-                        <div class="filter-img-block position-relative image-container translate-effect-right">
-                            <img src="@item.ImageUrl" alt="image">
-                            <div class="img-filter-overlay row m-0">
-                                <a class="gallery-filter-icon white-color fables-second-hover-color" @onclick="@(e =>  DeleteItem(item))">
-                                    <RadzenIcon Icon="clear"></RadzenIcon>
-                                </a>
+    <div class="row">
+        <RadzenButton Click=@OnClick Text="Add new image" ButtonStyle="ButtonStyle.Primary" Style="width:fit-content;margin-bottom:20px" />
+    </div>
+
+    @if (gallery.Count() != 0)
+    {
+        <div class="container">
+            <div class="gallery-filter">
+                <div class="portfolioContainer mt-4 my-lg-5 row">
+                    @foreach (var item in gallery)
+                    {
+                        <div class="col-sm-6 col-md-3 mb-4">
+                            <div class="filter-img-block position-relative image-container translate-effect-right">
+                                <img src="@item.ImageUrl" alt="image">
+                                <div class="img-filter-overlay row m-0">
+                                    <a class="gallery-filter-icon white-color fables-second-hover-color" @onclick="@(e =>  DeleteItem(item))">
+                                        <RadzenIcon Icon="clear"></RadzenIcon>
+                                    </a>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                }
+                    }
+                </div>
             </div>
         </div>
-    </div>
-}
-else
-{
-    <p>Gallery empty</p>
+    }
+    else
+    {
+        <p>Gallery empty</p>
+    }
 }
 
 <style>
@@ -54,19 +59,19 @@ else
     {
         Document galleryItem = new Document { ObjectId = Guid.NewGuid().ToString() };
         var result = await DialogService.OpenAsync("Simple Dialog", (ds) =>
-            @<RadzenStack Gap="1.5rem">
-                <RadzenCard>
-                    <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Choose an image</RadzenText>
-                    <RadzenUpload Multiple="false" Accept="image/*" Url="api/Upload/Gallery-image" Complete=@(args => OnComplete(args, galleryItem)) class="w-100" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "select file" }})" />
-                </RadzenCard>
-                <RadzenCard>
-                    <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Type</RadzenText>
-                    <RadzenTextBox @bind-Value=@type Placeholder="Enter gallery type" class="w-100" aria-label="Gallery type textbox" />
-                </RadzenCard>
-                <RadzenStack Orientation="Radzen.Orientation.Horizontal" Gap="0.5rem" AlignItems="AlignItems.Center">
-                    <RadzenButton Text="Save" Click=@(() => SaveGalleryItem(ds, galleryItem)) Style="width: 80px;" />
-                </RadzenStack>
-            </RadzenStack>
+    @<RadzenStack Gap="1.5rem">
+        <RadzenCard>
+            <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Choose an image</RadzenText>
+            <RadzenUpload Multiple="false" Accept="image/*" Url="api/Upload/Gallery-image" Complete=@(args => OnComplete(args, galleryItem)) class="w-100" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "select file" }})" />
+        </RadzenCard>
+        <RadzenCard>
+            <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Type</RadzenText>
+            <RadzenTextBox @bind-Value=@type Placeholder="Enter gallery type" class="w-100" aria-label="Gallery type textbox" />
+        </RadzenCard>
+        <RadzenStack Orientation="Radzen.Orientation.Horizontal" Gap="0.5rem" Radzen.AlignItems="Radzen.AlignItems.Center">
+            <RadzenButton Text="Save" Click=@(() => SaveGalleryItem(ds, galleryItem)) Style="width: 80px;" />
+        </RadzenStack>
+    </RadzenStack>
     );
 
     }
@@ -79,7 +84,7 @@ else
         StateHasChanged();
     }
 
-    protected void SaveGalleryItem(DialogService ds, Document doc)
+    protected void SaveGalleryItem(Radzen.DialogService ds, Document doc)
     {
         doc.Type = type;
 
@@ -91,7 +96,7 @@ else
 
     protected void DeleteItem(Document doc)
     {
-        DB.Gallery.Delete(doc);   
+        DB.Gallery.Delete(doc);
 
         gallery = DB.Gallery.SelectAll();
         StateHasChanged();

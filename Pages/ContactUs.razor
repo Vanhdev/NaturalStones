@@ -28,15 +28,15 @@
             <span class="fables-iconmap-icon fa-2x fables-second-background-color text-white rounded-circle d-inline-block p-4"></span>
             <h2 class="font-16 semi-font fables-second-text-color my-3">Address Information</h2>
             <p class="font-14 fables-forth-text-color">
-                level13, 2Elizabeth St, Melbourne,Victor 2000
+                @Address
             </p>
 
         </div>
         <div class="col-12 col-sm-6 col-md-4 text-center mb-4 mb-md-0 wow zoomIn" data-wow-duration="1.5s" data-wow-delay=".8s">
             <span class="fables-iconphone fa-2x  fables-second-background-color text-white rounded-circle d-inline-block p-4"></span>
             <h2 class="font-16 semi-font fables-second-text-color my-3">Mail & Phone number</h2>
-            <p class="font-14 fables-forth-text-color">adminsupport@website.com</p>
-            <p class="font-14 fables-forth-text-color">+333 111 111 000</p>
+            <p class="font-14 fables-forth-text-color">@Email</p>
+            <p class="font-14 fables-forth-text-color">@PhoneNumber</p>
         </div>
         <div class="col-12 col-sm-6 col-md-4 text-center mb-4 mb-md-0 wow zoomIn" data-wow-duration="1.5s" data-wow-delay="1.2s">
             <span class="fables-iconcalender fa-2x fables-second-background-color text-white rounded-circle d-inline-block p-4"></span>
@@ -62,12 +62,50 @@
     </div>
     <h3 class="fables-second-text-color font-35 font-weight-bold text-center mt-0 mb-5 my-md-5">Our Location</h3>
     <div class="mb-4 mb-md-0">
-        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3117.8685890928296!2d-121.44738322372604!3d38.60589476385106!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x809ad9fd905ece19%3A0xe867e3e8c3bab78a!2s948%20Arden%20Wy%2C%20Sacramento%2C%20CA%2095815%2C%20Hoa%20K%E1%BB%B3!5e0!3m2!1svi!2s!4v1706450382898!5m2!1svi!2s" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3117.8685890928296!2d-121.44738322372604!3d38.60589476385106!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x809ad9fd905ece19%3A0xe867e3e8c3bab78a!2s948%20Arden%20Wy%2C%20Sacramento%2C%20CA%2095815%2C%20Hoa%20K%E1%BB%B3!5e0!3m2!1svi!2s!4v1706450382898!5m2!1svi!2s" style="border:0;width:100%; height:450px" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
     </div>
 </div>
 
 <!-- /End page content -->
 
 @code {
+    private string? Email;
+    private string? PhoneNumber;
+    private string? Address;
+    private string? Content;
+    private string? LogoUrl;
+    protected override void OnInitialized()
+    {
+        var GeneralInfo = DB.PageInfo.Find("layout");
+        if (GeneralInfo.Email != null)
+        {
+            Email = GeneralInfo.Email;
+        }
+        else Email = "Admin@gmail.com";
 
+        if (GeneralInfo.PhoneNumber != null)
+        {
+            PhoneNumber = GeneralInfo.PhoneNumber;
+        }
+        else PhoneNumber = "012345886978";
+
+        if (GeneralInfo.ImageUrl != null)
+        {
+            LogoUrl = GeneralInfo.ImageUrl;
+        }
+        else LogoUrl = "assets/custom/images/fables-logo.png";
+
+        if (GeneralInfo.Address != null)
+        {
+            Address = GeneralInfo.Address;
+        }
+        else Address = "948 Arden Way, Sacramento CA 95815";
+
+        if (GeneralInfo.Content != null)
+        {
+            Content = GeneralInfo.Content;
+        }
+        else Content = $"t is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters.<br><br>t is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.";
+        StateHasChanged();
+    }
 }

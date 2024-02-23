@@ -3,34 +3,41 @@
 @layout AdminLayout
 @inherits Admin
 
-<div class="row">
-    <div class="col-md-4 p-3">
-        <RadzenCard>
-            <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Upload images</RadzenText>
-            <RadzenUpload Multiple="true" Accept="image/*" Url="Api/Upload/Product-image" Complete=@(args => OnComplete(args)) class="w-100" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "select file" }})" />
-        </RadzenCard>
+
+<PageTitle>Admin Product</PageTitle>
+
+@if (loggedIn)
+{
+    <div class="row">
+        <div class="col-md-4 p-3">
+            <RadzenCard>
+                <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Upload images</RadzenText>
+                <RadzenUpload Multiple="true" Accept="image/*" Url="Api/Upload/Product-image" Complete=@(args => OnComplete(args)) class="w-100" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "select file" }})" />
+            </RadzenCard>
+        </div>
+        <div class="col-md-4 p-3">
+            <RadzenCard>
+                <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Title</RadzenText>
+                <RadzenTextBox @bind-Value=@name Placeholder="Enter product name" class="w-100" aria-label="Product name textbox" />
+            </RadzenCard>
+        </div>
+        <div class="col-md-2 p-3">
+            <RadzenCard>
+                <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Category</RadzenText>
+                <RadzenDropDown @bind-Value=@category Data=@categoryList Style="width: 90%;" Name="DropDownBindValue" />
+            </RadzenCard>
+        </div>
+        <div class="col-md-2 p-3" style="text-align:center">
+            <RadzenButton Click=@OnClick Text="Save" ButtonStyle="ButtonStyle.Primary" Style="top:50%; transform: translateY(-50%);" />
+        </div>
     </div>
-    <div class="col-md-4 p-3">
-        <RadzenCard>
-            <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Title</RadzenText>
-            <RadzenTextBox @bind-Value=@name Placeholder="Enter product name" class="w-100" aria-label="Product name textbox" />
-        </RadzenCard>
-    </div>
-    <div class="col-md-2 p-3">
-        <RadzenCard>
-            <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Category</RadzenText>
-            <RadzenDropDown @bind-Value=@category Data=@categoryList Style="width: 90%;" Name="DropDownBindValue" />
-        </RadzenCard>
-    </div>
-    <div class="col-md-2 p-3" style="text-align:center">
-        <RadzenButton Click=@OnClick Text="Save" ButtonStyle="ButtonStyle.Primary" Style="top:50%; transform: translateY(-50%);" />
-    </div>
-</div>
-<RadzenCard>
-    <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Short description</RadzenText>
-    <RadzenTextArea @bind-Value=@shortDes Placeholder="Enter product short description" class="w-100" aria-label="Product short description textbox" />
-</RadzenCard>
-<RadzenHtmlEditor @bind-Value=@htmlValue style="height: 700px;" UploadUrl="Api/Upload/Blog-image" />
+
+    <RadzenCard>
+        <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Short description</RadzenText>
+        <RadzenTextArea @bind-Value=@shortDes Placeholder="Enter product short description" class="w-100" aria-label="Product short description textbox" Style="height:150px" />
+    </RadzenCard>
+    <RadzenHtmlEditor @bind-Value=@htmlValue style="height: 700px;" UploadUrl="Api/Upload/Image" />
+}
 
 @code {
     [Parameter]
@@ -59,7 +66,7 @@
             name = product.Name ?? "";
             htmlValue = product.Description ?? "";
             category = product.Category ?? "";
-            shortDes = product.ShortDescription ?? "";
+            shortDes = product.ShortDescription.Replace("\n", "<br>") ?? "";
         }
         StateHasChanged();
     }
@@ -72,7 +79,7 @@
         product.ShortDescription = shortDes;
         product.Category = category;
 
-        DB.Products.Insert(product);
+        DB.Products.InsertOrUpdate(product);
         StateHasChanged();
 
         Navigation.NavigateTo("/admin/products");
@@ -89,7 +96,6 @@
 
         product.ImageUrlList = res.GetArray<List<string>>("urls");
         DB.Products.InsertOrUpdate(product);
-
 
         StateHasChanged();
     }

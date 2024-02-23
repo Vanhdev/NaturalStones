@@ -13,18 +13,18 @@
 
     <div class="row mb-4 mb-md-5 overflow-hidden" style="">
         <div class="col-12 col-sm-6 wow fadeInLeft">
-            <form class="fables-contact-form">
+            <form class="fables-contact-form" @onsubmit="@Submit">
                 <div class="form-group">
-                    <input type="text" class="form-control rounded-0 p-3" placeholder="Name">
+                    <input type="text" @bind="@Name" class="form-control rounded-0 p-3" placeholder="Name" required>
                 </div>
                 <div class="form-group">
-                    <input type="email" class="form-control rounded-0 p-3" placeholder="Email">
+                    <input type="email" @bind="@Email" class="form-control rounded-0 p-3" placeholder="Email" required>
                 </div>
                 <div class="form-group">
-                    <input type="text" class="form-control rounded-0 p-3" placeholder="Subject">
+                    <input type="text" @bind="@Subject" class="form-control rounded-0 p-3" placeholder="Subject" required>
                 </div>
                 <div class="form-group">
-                    <textarea class="form-control rounded-0 p-3" placeholder="Message" rows="3"></textarea>
+                    <textarea class="form-control rounded-0 p-3" @bind="@Message" placeholder="Message" rows="3" required></textarea>
                 </div>
                 <button type="submit" class="btn fables-second-background-color rounded-0 text-white btn-block p-3" style="width:-webkit-fill-available">Send</button>
             </form>
@@ -38,5 +38,21 @@
 
 
 @code {
+    private string? Name;
+    private string? Email;
+    private string? Subject;
+    private string? Message;
 
+    protected void Submit()
+    {
+        var doc = new Document {
+            ObjectId = Guid.NewGuid().ToString(),
+            Name = Name,
+            Email =Email,
+            Subject = Subject,
+            Message = Message
+        };
+
+        DB.Estimates.InsertOrUpdate(doc);
+    }
 }

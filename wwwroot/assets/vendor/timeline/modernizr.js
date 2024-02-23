@@ -1339,7 +1339,7 @@ window.Modernizr = (function( window, document, undefined ) {
 
     /*>>testprop*/
     // Modernizr.testProp() investigates whether a given style property is recognized
-    // Note that the property names must be provided in the camelCase variant.
+    // Note that the property names must be provided in the camelCase Radzen.Variant.
     // Modernizr.testProp('pointerEvents')
     Modernizr.testProp      = function(prop){
         return testProps([prop]);
@@ -1348,8 +1348,8 @@ window.Modernizr = (function( window, document, undefined ) {
 
     /*>>testallprops*/
     // Modernizr.testAllProps() investigates whether a given style property,
-    //   or any of its vendor-prefixed variants, is recognized
-    // Note that the property names must be provided in the camelCase variant.
+    //   or any of its vendor-prefixed Radzen.Variants, is recognized
+    // Note that the property names must be provided in the camelCase Radzen.Variant.
     // Modernizr.testAllProps('boxSizing')
     Modernizr.testAllProps  = testPropsAll;
     /*>>testallprops*/
@@ -1363,11 +1363,11 @@ window.Modernizr = (function( window, document, undefined ) {
 
 
     /*>>prefixed*/
-    // Modernizr.prefixed() returns the prefixed or nonprefixed property name variant of your input
+    // Modernizr.prefixed() returns the prefixed or nonprefixed property name Radzen.Variant of your input
     // Modernizr.prefixed('boxSizing') // 'MozBoxSizing'
 
     // Properties must be passed as dom-style camelcase, rather than `box-sizing` hypentated style.
-    // Return values will also be the camelCase variant, if you need to translate that to hypenated style use:
+    // Return values will also be the camelCase Radzen.Variant, if you need to translate that to hypenated style use:
     //
     //     str.replace(/([A-Z])/g, function(str,m1){ return '-' + m1.toLowerCase(); }).replace(/^ms-/,'-ms-');
 
