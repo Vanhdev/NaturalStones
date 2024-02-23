@@ -1,0 +1,11 @@
+﻿@layout LoginLayout
+@page "/admin/logout"
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await localStorage.RemoveItemAsync("auth");
+
+        Navigation.NavigateTo("/admin");
+    }
+}

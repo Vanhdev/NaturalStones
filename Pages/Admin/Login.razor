@@ -2,6 +2,7 @@
 @page "/admin/login"
 @using System.Text
 
+<PageTitle>Admin login</PageTitle>
 <RadzenStack Gap="0" Class="rz-my-12 rz-mx-auto rz-border-radius-6 rz-shadow-10" Style="width: 100%; max-width: 400px; overflow: hidden;">
     <RadzenCard Class="rz-shadow-0 rz-border-radius-0 rz-background-color-info rz-p-12" style="text-align: center;">
         <RadzenText TextStyle="TextStyle.DisplayH3" TagName="TagName.H2" Class="rz-color-white rz-mb-0">Login</RadzenText>
@@ -28,11 +29,25 @@
 
                 Navigation.NavigateTo("/admin");
             }
+            else
+            {
+                await DialogService.OpenAsync("Login Error", ds =>
+                    @<div>
+                        Wrong Username or Password!
+                    </div>,
+                    new Radzen.DialogOptions() { CloseDialogOnOverlayClick = true }
+                );
+            }
         }
-
-        await DialogService.OpenAsync("Login Error", ds =>
-    @<div>
-        Wrong Username or Password!
-    </div>, new DialogOptions() { CloseDialogOnOverlayClick = true });
+        else
+        {
+            await DialogService.OpenAsync("Login Error", ds =>
+                @<div>
+                    Wrong Username or Password!
+                </div>, 
+                new Radzen.DialogOptions() { CloseDialogOnOverlayClick = true }
+            );
+        }
     }
+
 }

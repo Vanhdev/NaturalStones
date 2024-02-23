@@ -2,6 +2,10 @@
 
 <PageTitle>NaturalStones</PageTitle>
 
+<MudThemeProvider/>
+<MudDialogProvider/>
+<MudSnackbarProvider/>
+
 @if (Email == null || PhoneNumber == null)
 {
     <div id="ju-loading-screen">
@@ -56,9 +60,10 @@ else
                                         Products
                                     </a>
                                     <ul class="dropdown-menu" aria-labelledby="sub-nav2">
-                                        <li><a class="dropdown-item" href="/product-1">Product 1</a></li>
-                                        <li><a class="dropdown-item" href="#">Product 2</a></li>
-                                        <li><a class="dropdown-item" href="#">Product3 3</a></li>
+                                        @foreach (var category in Categories)
+                                        {
+                                            <li><a class="dropdown-item" href="/products?category_id=@category.ObjectId">@category.Name</a></li>
+                                        }
                                     </ul>
                                 </li>
                                 <li class="nav-item dropdown">
@@ -72,19 +77,13 @@ else
                                     </a>
                                     <ul class="dropdown-menu" aria-labelledby="sub-nav4">
 
-                                        <li><a class="dropdown-item" href="/gallery">Gallery 1</a></li>
-                                        <li><a class="dropdown-item" href="#">Gallery 2</a></li>
-                                        <li><a class="dropdown-item" href="#">Before & After</a></li>
+                                        <li><a class="dropdown-item" href="/gallery">Gallery</a></li>
+                                        <li><a class="dropdown-item" href="/gallery/before-after">Before & After</a></li>
                                     </ul>
                                 </li>
                                 <li class="nav-item dropdown">
                                     <a class="nav-link " href="/testimonials" id="sub-nav5">
                                         Testimonials
-                                    </a>
-                                </li>
-                                <li class="nav-item dropdown">
-                                    <a class="nav-link" href="/specials" id="sub-nav6">
-                                        Specials
                                     </a>
                                 </li>
                                 <li class="nav-item dropdown">
@@ -178,9 +177,9 @@ else
 
             </div> *@
                 <div class="col-12 col-lg-4 mb-4 mb-lg-0">
-                    <a href="#" class="fables-second-border-color border-bottom pb-3 d-block mb-3 mt-minus-13"><img src="assets/custom/images/fables-logo.png" alt="fables template"></a>
+                    <a href="#" class="fables-second-border-color border-bottom pb-3 d-block mb-3 mt-minus-13"><img src="@LogoUrl" alt="fables template"></a>
                     <p class="font-15 fables-third-text-color">
-                        @Content
+                        @((MarkupString)Content)
                     </p>
 
                 </div>
@@ -237,6 +236,7 @@ else
     private string? Address;
     private string? Content;
     private string? LogoUrl;
+    DocumentList Categories;
     protected override void OnInitialized()
     {
         var GeneralInfo = DB.PageInfo.Find("layout");
@@ -256,19 +256,22 @@ else
         {
             LogoUrl = GeneralInfo.ImageUrl;
         }
-        else LogoUrl = "Assets/Images/logo.png";
+        else LogoUrl = "assets/custom/images/fables-logo.png";
 
         if (GeneralInfo.Address != null)
         {
             Address = GeneralInfo.Address;
         }
-        else Address = "Hanoi";
+        else Address = "948 Arden Way, Sacramento CA 95815";
 
         if (GeneralInfo.Content != null)
         {
             Content = GeneralInfo.Content;
         }
         else Content = $"t is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters.<br><br>t is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.";
+
+        Categories = DB.Categories.SelectAll();
+
         StateHasChanged();
     }
 

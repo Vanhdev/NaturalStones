@@ -1,33 +1,57 @@
 ﻿@inherits LayoutComponentBase
-
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+@using System.Text
 
 <PageTitle>NaturalStones</PageTitle>
+
 <RadzenDialog />
 <RadzenNotification />
 <RadzenTooltip />
 <RadzenContextMenu />
+
 <RadzenLayout>
-    <RadzenHeader>
-        <RadzenStack Orientation="Radzen.Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0">
-            <RadzenSidebarToggle Click="@(() => sidebarExpanded = !sidebarExpanded)" />
-            <RadzenLabel Text="Header" />
-        </RadzenStack>
-    </RadzenHeader>
-    <RadzenSidebar Responsive="false" Style="width: max-content">
-        <RadzenPanelMenu DisplayStyle="@(sidebarExpanded ? MenuItemDisplayStyle.IconAndText : MenuItemDisplayStyle.Icon)" ShowArrow="false">
-            <RadzenPanelMenuItem Text="Home" Icon="home" />
-            <RadzenPanelMenuItem Text="Gallery" Path="/admin/gallery" Icon="dashboard" />
-            <RadzenPanelMenuItem Text="Product" Icon="store">
-                <RadzenPanelMenuItem class="path-menu" Path="/admin/products/add-new" Text="Add product" Icon="add_business" />
-                <RadzenPanelMenuItem class="path-menu" Path="/admin/products" Text="List products" Icon="list" />
-                <RadzenPanelMenuItem class="path-menu" Path="/admin/categories" Text="List categories" Icon="category" />
-            </RadzenPanelMenuItem>
-            <RadzenPanelMenuItem Text="Blogs" Icon="auto_awesome">
-                <RadzenPanelMenuItem class="path-menu" Path="/admin/blogs/add-new" Text="Add blog" Icon="add" />
-                <RadzenPanelMenuItem class="path-menu" Path="/admin/blogs" Text="List blogs" Icon="list" />
-            </RadzenPanelMenuItem>
-        </RadzenPanelMenu>
-    </RadzenSidebar>
+    @if (loggedIn)
+    {
+        <RadzenHeader>
+            <RadzenRow>
+                <RadzenColumn>
+                    <RadzenStack Orientation="Radzen.Orientation.Horizontal" Radzen.AlignItems="Radzen.AlignItems.Center" Gap="0">
+                        <RadzenSidebarToggle Click="@(() => sidebarExpanded = !sidebarExpanded)" />
+                        <RadzenLabel Text="Dashboard" />
+                    </RadzenStack>
+                </RadzenColumn>
+                <RadzenColumn>
+                    <RadzenStack Orientation="Radzen.Orientation.Horizontal" JustifyContent="JustifyContent.End" Radzen.AlignItems="Radzen.AlignItems.Center" Gap="0">
+                        <RadzenMenu>
+                            <RadzenMenuItem Text="Admin" Icon="account_box">
+                                <RadzenMenuItem Text="Logout" Path="/admin/logout" Icon="logout"></RadzenMenuItem>
+                            </RadzenMenuItem>
+                        </RadzenMenu>
+
+                    </RadzenStack>
+                </RadzenColumn>
+            </RadzenRow>
+
+        </RadzenHeader>
+        <RadzenSidebar Responsive="false" Style="width: max-content">
+            <RadzenPanelMenu Multiple="false" DisplayStyle="@(sidebarExpanded ? MenuItemDisplayStyle.IconAndText : MenuItemDisplayStyle.Icon)" ShowArrow="false">
+                <RadzenPanelMenuItem Text="Genneral" Path="/admin" Icon="home" />
+                <RadzenPanelMenuItem Text="Gallery" Path="/admin/gallery" Icon="dashboard" />
+                <RadzenPanelMenuItem Text="Product" Icon="store">
+                    <RadzenPanelMenuItem class="path-menu" Path="/admin/products/add-new" Text="Add product" Icon="add_business" />
+                    <RadzenPanelMenuItem class="path-menu" Path="/admin/products" Text="List products" Icon="list" />
+                    <RadzenPanelMenuItem class="path-menu" Path="/admin/categories" Text="List categories" Icon="category" />
+                </RadzenPanelMenuItem>
+                <RadzenPanelMenuItem Text="Blogs" Icon="auto_awesome">
+                    <RadzenPanelMenuItem class="path-menu" Path="/admin/blogs/add-new" Text="Add blog" Icon="add" />
+                    <RadzenPanelMenuItem class="path-menu" Path="/admin/blogs" Text="List blogs" Icon="list" />
+                </RadzenPanelMenuItem>
+                <RadzenPanelMenuItem Text="Testimonials" Icon="reviews" Path="/admin/testimonials" />
+                <RadzenPanelMenuItem Text="FAQs" Icon="question_answer" Path="/admin/faqs" />
+                <RadzenPanelMenuItem Text="Estimates" Icon="contact_mail" Path="/admin/estimates" />
+            </RadzenPanelMenu>
+        </RadzenSidebar>
+    }
     <RadzenBody>
         <div class="rz-p-4">
             @Body
@@ -53,10 +77,25 @@
 @code {
     bool sidebarExpanded = true;
 
-}
+    string? authString;
 
-<style>
-    #watermark {
-        display: none !important;
+    public bool loggedIn = false;
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        var auth = await localStorage.GetItemAsStringAsync("auth");
+        if (auth != null)
+        {
+            authString = Encoding.UTF8.GetString(Convert.FromBase64String(auth));
+        }
+
+        var admin = DB.Accounts.Find("admin");
+        var adminString = $"{admin.Username.ToMD5()}-{admin.Password.ToMD5()}";
+
+        if (authString == adminString)
+        {
+            loggedIn = true;
+        }
+
+        StateHasChanged();
     }
-</style>
+}

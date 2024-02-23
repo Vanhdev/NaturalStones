@@ -1,0 +1,61 @@
+﻿@page "/admin/estimate/{ID}"
+@layout AdminLayout
+@inherits Admin
+
+<PageTitle>Admin Estimate</PageTitle>
+
+@if (loggedIn)
+{
+    <div class="row">
+        <div class="col-md-4 p-3">
+            <RadzenCard>
+                <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Customer Name</RadzenText>
+                <RadzenTextBox @bind-Value=@name Placeholder="Enter customer name" class="w-100" aria-label="Customer name textbox"
+                                          Disabled />
+             </RadzenCard>
+         </div>
+         <div class="col-md-4 p-3">
+             <RadzenCard>
+                 <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Customer Email</RadzenText>
+                 <RadzenTextBox @bind-Value=@email Placeholder="Enter customer email" class="w-100" aria-label="Customer email textbox"
+                                          Disabled />
+             </RadzenCard>
+         </div>
+         <div class="col-md-4 p-3">
+             <RadzenCard>
+                 <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Subject</RadzenText>
+                 <RadzenTextBox @bind-Value=@subject Placeholder="Enter subject" class="w-100" aria-label="Subject textbox"
+                                          Disabled />
+             </RadzenCard>
+         </div>
+     </div>
+    <RadzenCard>
+        <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Message</RadzenText>
+        <RadzenTextArea @bind-Value=@message Placeholder="Enter subject" class="w-100" aria-label="Message textbox"
+                            Disabled />
+     </RadzenCard>
+}
+
+@code {
+    [Parameter]
+    public string? ID { get; set; }
+
+    private string? name;
+    private string? email;
+    private string? subject;
+    private string? message;
+
+    Document? estimate;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        estimate = DB.Estimates.Find(ID);
+        name = estimate.Name;
+        email = estimate.Email;
+        subject = estimate.Subject;
+        message = estimate.Message;
+        StateHasChanged();
+    }
+}

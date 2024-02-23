@@ -1,4 +1,5 @@
 ﻿@page "/gallery"
+@page "/gallery/{Type}"
 
 <PageTitle>Gallery</PageTitle>
 
@@ -47,11 +48,14 @@
 
 <!-- /End page content -->
 @code {
+    [Parameter]
+    public string? Type { get; set; }
     List<Document>? gallery;
 
     protected override void OnInitialized()
     {
-        gallery = DB.Gallery.SelectAll();
+        if (Type != null) gallery = DB.Gallery.Select(x => x.Type == Type).ToList();
+        else gallery = DB.Gallery.SelectAll();
 
         StateHasChanged();
     }

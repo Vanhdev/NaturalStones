@@ -1,0 +1,120 @@
+﻿@page "/admin/testimonials"
+@layout AdminLayout
+@inherits Admin
+
+<PageTitle>Admin Testimonial</PageTitle>0
+
+@if (loggedIn)
+{
+    <RadzenButton Click=@OnClick Text="Add new testimonial" ButtonStyle="ButtonStyle.Primary" Style="width:fit-content;margin-bottom:20px" Icon="add" />
+    <RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="5" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
+                    Data="@testimonials" TItem="Document" LogicalFilterOperator="LogicalFilterOperator.Or">
+        <Columns>
+            <RadzenDataGridColumn TItem="Document" Property="ObjectId" Width="20%" Sortable="false" Filterable="false" Title="ID" Frozen="true" TextAlign="TextAlign.Center" />
+            <RadzenDataGridColumn TItem="Document" Property="CustomerName" Width="15%" Title="Customer name" Filterable="false" Frozen="true" Sortable="false" TextAlign="TextAlign.Center" />
+            <RadzenDataGridColumn TItem="Document" Property="CustomerPosition" Width="15%" Title="Customer information" Filterable="false" Frozen="true" Sortable="false" TextAlign="TextAlign.Center" />
+            <RadzenDataGridColumn TItem="Document" Property="Content" Width="42%" Title="Testimonial" Filterable="false" Frozen="true" Sortable="false" TextAlign="TextAlign.Center" />
+            <RadzenDataGridColumn TItem="Document" Sortable="false" Filterable="false" Width="8%" Frozen="true">
+                <Template Context="data">
+                    <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Radzen.Variant="Radzen.Variant.Flat" Size="ButtonSize.Medium" Click="@(args => UpdateRow(data))" @onclick:stopPropagation="true">
+                    </RadzenButton>
+                    <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Radzen.Variant="Radzen.Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(data.ObjectId))" @onclick:stopPropagation="true">
+                    </RadzenButton>
+                </Template>
+            </RadzenDataGridColumn>
+        </Columns>
+    </RadzenDataGrid>
+}
+
+@code {
+    DocumentList testimonials;
+    string CustomerName = "";
+    string CustomerPosition = "";
+    string Content = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        testimonials = DB.Testimonials.SelectAll();
+
+        StateHasChanged();
+    }
+
+    protected async Task UpdateRow(Document doc)
+    {
+        CustomerName = doc.CustomerName;
+        CustomerPosition = doc.CustomerPosition;
+        Content = doc.Content;
+        StateHasChanged();
+        var result = await DialogService.OpenAsync("Update testimonial", (ds) =>
+    @<RadzenStack Gap="1.5rem">
+        <RadzenCard>
+            <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Customer name</RadzenText>
+            <RadzenTextBox @bind-Value=@CustomerName Placeholder="Enter customer name" class="w-100" aria-label="Name textbox" />
+        </RadzenCard>
+        <RadzenCard>
+            <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Customer information</RadzenText>
+            <RadzenTextBox @bind-Value=@CustomerPosition Placeholder="Enter customer information" class="w-100" aria-label="Info textbox" />
+        </RadzenCard>
+        <RadzenCard>
+            <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Testimonial</RadzenText>
+            <RadzenTextArea @bind-Value=@Content Placeholder="Enter testimonial" class="w-100" aria-label="Testimonial textarea" Style="height:200px" />
+        </RadzenCard>
+        <RadzenStack Orientation="Radzen.Orientation.Horizontal" Gap="0.5rem" Radzen.AlignItems="Radzen.AlignItems.Center">
+            <RadzenButton Text="Save" Click=@(() => SaveCategory(ds, doc)) Style="width: 80px;" />
+        </RadzenStack>
+    </RadzenStack>
+        );
+    }
+
+    protected void DeleteRow(string ID)
+    {
+        DB.Testimonials.Delete(ID);
+        testimonials = DB.Testimonials.SelectAll();
+
+        StateHasChanged();
+    }
+
+    protected async Task OnClick()
+    {
+        CustomerName = "";
+        CustomerPosition = "";
+        Content = "";
+        StateHasChanged();
+        var result = await DialogService.OpenAsync("Add new testimonial", (ds) =>
+    @<RadzenStack Gap="1.5rem">
+        <RadzenCard>
+            <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Customer name</RadzenText>
+            <RadzenTextBox @bind-Value=@CustomerName Placeholder="Enter customer name" class="w-100" aria-label="Name textbox" />
+        </RadzenCard>
+        <RadzenCard>
+            <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Customer information</RadzenText>
+            <RadzenTextBox @bind-Value=@CustomerPosition Placeholder="Enter customer information" class="w-100" aria-label="Info textbox" />
+        </RadzenCard>
+        <RadzenCard>
+            <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Testimonial</RadzenText>
+            <RadzenTextArea @bind-Value=@Content Placeholder="Enter testimonial" class="w-100" aria-label="Testimonial textarea" Style="height:200px" />
+        </RadzenCard>
+        <RadzenStack Orientation="Radzen.Orientation.Horizontal" Gap="0.5rem" Radzen.AlignItems="Radzen.AlignItems.Center">
+            <RadzenButton Text="Save" Click=@(() => SaveCategory(ds)) Style="width: 80px;" />
+        </RadzenStack>
+    </RadzenStack>
+    );
+    }
+
+    protected void SaveCategory(Radzen.DialogService ds, Document? doc = null)
+    {
+
+        if (doc == null) doc = new Document { ObjectId = Guid.NewGuid().ToString() };
+        doc.CustomerName = CustomerName;
+        doc.CustomerPosition = CustomerPosition;
+        doc.Content = Content;
+        DB.Testimonials.InsertOrUpdate(doc);
+
+        testimonials = DB.Testimonials.SelectAll();
+        StateHasChanged();
+        ds.Close(true);
+    }
+}
+

@@ -14,6 +14,8 @@ namespace NaturalStones.Pages.Admin
         NavigationManager navigationManager { get; set; }
         [Inject]
         IJSRuntime JSRuntime { get; set; }
+
+        public bool loggedIn = false;
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             var auth = await localStorageService.GetItemAsStringAsync("auth");
@@ -29,7 +31,11 @@ namespace NaturalStones.Pages.Admin
             var admin = DB.Accounts.Find("admin");
             var adminString = $"{admin.Username.ToMD5()}-{admin.Password.ToMD5()}";
 
-            if (authString != adminString)
+            if (authString == adminString)
+            {
+                loggedIn = true;
+            }
+            else
             {
                 navigationManager.NavigateTo("/admin/login");
             }

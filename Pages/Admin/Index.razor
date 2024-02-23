@@ -1,8 +1,118 @@
 ﻿@page "/admin"
 @layout AdminLayout
+@inherits Admin
 
-<h3>Index</h3>
+<PageTitle>Admin</PageTitle>
+@if (loggedIn)
+{
+    <div class="row">
+        <div class="col-md-4 p-3">
+            <RadzenCard>
+                <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Change logo</RadzenText>
+                <RadzenUpload Multiple="false" Accept="image/*" Url="api/Upload/Image" Complete=@(args => OnComplete(args)) class="w-100" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "select file" }})" />
+            </RadzenCard>
+        </div>
+        <div class="col-md-6 p-3">
+            <div style="background-color:#2C3E4F; width:fit-content; padding:10px; position:absolute; top:50%; transform: translateY(-50%);">
+                <img src="@LogoUrl" />
+            </div>
 
-@code {
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4 p-3">
+            <RadzenCard>
+                <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Phone number</RadzenText>
+                <RadzenTextBox @bind-Value=@PhoneNumber Placeholder="Enter phone number" class="w-100" aria-label="Phone number textbox" />
+            </RadzenCard>
+        </div>
+        <div class="col-md-4 p-3">
+            <RadzenCard>
+                <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Email</RadzenText>
+                <RadzenTextBox @bind-Value=@Email Placeholder="Enter phone number" class="w-100" aria-label="Email textbox" />
+            </RadzenCard>
+        </div>
+        <div class="col-md-4 p-3">
+            <RadzenCard>
+                <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Address</RadzenText>
+                <RadzenTextBox @bind-Value=@Address Placeholder="Enter address" class="w-100" aria-label="Address textbox" />
+            </RadzenCard>
 
+        </div>
+    </div>
+    <RadzenCard>
+        <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Footer content</RadzenText>
+        <RadzenTextArea @bind-Value=@Content Placeholder="Enter footer content" class="w-100" aria-label="Footer content textbox" Style="height:150px" />
+    </RadzenCard>
+    <div style="text-align:center; padding:20px">
+        <RadzenButton Click=@Save Text="Save" ButtonStyle="ButtonStyle.Primary" Style="margin:auto" />
+    </div>
+}
+
+@code
+{
+    private string? Email;
+    private string? PhoneNumber;
+    private string? Address;
+    private string? Content;
+    private string? LogoUrl;
+    private Document? GeneralInfo;
+    protected override void OnInitialized()
+    {
+        GeneralInfo = DB.PageInfo.Find("layout");
+        if (GeneralInfo.Email != null)
+        {
+            Email = GeneralInfo.Email;
+        }
+        else Email = "Admin@gmail.com";
+
+        if (GeneralInfo.PhoneNumber != null)
+        {
+            PhoneNumber = GeneralInfo.PhoneNumber;
+        }
+        else PhoneNumber = "012345886978";
+
+        if (GeneralInfo.ImageUrl != null)
+        {
+            LogoUrl = GeneralInfo.ImageUrl;
+        }
+        else LogoUrl = "assets/custom/images/fables-logo.png";
+
+        if (GeneralInfo.Address != null)
+        {
+            Address = GeneralInfo.Address;
+        }
+        else Address = "948 Arden Way, Sacramento CA 95815";
+
+        if (GeneralInfo.Content != null)
+        {
+            Content = GeneralInfo.Content.Replace("<br>", "\n");
+        }
+        else Content = $"t is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters.<br><br>t is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.";
+        StateHasChanged();
+    }
+
+    protected void OnComplete(UploadCompleteEventArgs args)
+    {
+        var res = Document.Parse(args.RawResponse);
+
+        GeneralInfo.ImageUrl = res.GetString("url");
+        DB.PageInfo.Update(GeneralInfo.ObjectId, GeneralInfo);
+        LogoUrl = GeneralInfo.ImageUrl;
+
+        StateHasChanged();
+    }
+
+    protected void Save()
+    {
+        GeneralInfo.Email = Email;
+        GeneralInfo.PhoneNumber = PhoneNumber;
+        GeneralInfo.Address = Address;
+        GeneralInfo.ImageUrl = LogoUrl;
+        GeneralInfo.Content = Content.Replace("\n", "<br>");
+
+        DB.PageInfo.InsertOrUpdate(GeneralInfo);
+
+        StateHasChanged();
+    }
 }

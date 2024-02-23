@@ -1,0 +1,124 @@
+﻿@page "/admin/faqs"
+@layout AdminLayout
+@inherits Admin
+
+<PageTitle>Admin FAQ</PageTitle>
+@if (loggedIn)
+{
+    <RadzenButton Click=@OnClick Text="Add new FAQ" ButtonStyle="ButtonStyle.Primary" Style="width:fit-content;margin-bottom:20px" Icon="add" />
+    <RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="5" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
+                    Data="@faqs" TItem="Document" LogicalFilterOperator="LogicalFilterOperator.Or">
+        <Columns>
+            <RadzenDataGridColumn TItem="Document" Property="ObjectId" Sortable="false" Filterable="false" Title="ID" Frozen="true" Width="80px" TextAlign="TextAlign.Center" />
+            <RadzenDataGridColumn TItem="Document" Property="Question" Title="Frequently asked question" Filterable="false" Width="160px" Frozen="true" Sortable="false" TextAlign="TextAlign.Center" />
+            <RadzenDataGridColumn TItem="Document" Sortable="false" Filterable="false" Width="80px" Frozen="true">
+                <Template Context="data">
+                    <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Radzen.Variant="Radzen.Radzen.Variant.Flat" Size="ButtonSize.Medium" Click="@(args => UpdateRow(data))" @onclick:stopPropagation="true">
+                    </RadzenButton>
+                    <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Radzen.Variant="Radzen.Radzen.Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(data.ObjectId))" @onclick:stopPropagation="true">
+                    </RadzenButton>
+                </Template>
+            </RadzenDataGridColumn>
+        </Columns>
+    </RadzenDataGrid>
+}
+
+@code {
+    DocumentList faqs;
+    string Question = "";
+    string Answer = "";
+    private bool visible = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        faqs = DB.FAQs.SelectAll();
+
+        StateHasChanged();
+    }
+
+    protected async Task UpdateRow(Document doc)
+    {
+        Question = doc.Question;
+        Answer = doc.Answer;
+        visible = false;
+        StateHasChanged();
+        var result = await DialogService.OpenAsync("Update FAQ", (ds) =>
+    @<RadzenStack Gap="1.5rem">
+        <RadzenCard>
+            <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Question</RadzenText>
+            <RadzenText TextStyle="TextStyle.Subtitle2" Style="color: red" Visible="@visible">Question has already existed!</RadzenText>
+            <RadzenTextBox @bind-Value=@Question Placeholder="Enter question" class="w-100" aria-label="Question textbox" />
+        </RadzenCard>
+        <RadzenCard>
+            <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Answer</RadzenText>
+            <RadzenTextArea @bind-Value=@Answer Placeholder="Enter answer" class="w-100" aria-label="Answer textarea" Style="height:200px" />
+        </RadzenCard>
+        <RadzenStack Orientation="Radzen.Orientation.Horizontal" Gap="0.5rem" Radzen.AlignItems="Radzen.Radzen.AlignItems.Center">
+            <RadzenButton Text="Save" Click=@(() => SaveCategory(ds, doc)) Style="width: 80px;" />
+        </RadzenStack>
+    </RadzenStack>
+        );
+    }
+
+    protected void DeleteRow(string ID)
+    {
+        DB.FAQs.Delete(ID);
+        faqs = DB.FAQs.SelectAll();
+
+        StateHasChanged();
+    }
+
+    protected async Task OnClick()
+    {
+        visible = false;
+        Question = "";
+        Answer = "";
+        StateHasChanged();
+
+        var result = await DialogService.OpenAsync("Add new FAQ", (ds) =>
+    @<RadzenStack Gap="1.5rem">
+        <RadzenCard>
+            <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Question</RadzenText>
+            <RadzenText TextStyle="TextStyle.Subtitle2" Style="color: red" Visible="@visible">Question has already existed!</RadzenText>
+            <RadzenTextBox @bind-Value=@Question Placeholder="Enter question" class="w-100" aria-label="Question textbox" />
+        </RadzenCard>
+        <RadzenCard>
+            <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Answer</RadzenText>
+            <RadzenTextArea @bind-Value=@Answer Placeholder="Enter answer" class="w-100" aria-label="Answer textarea" Style="height:200px" />
+        </RadzenCard>
+        <RadzenStack Orientation="Radzen.Orientation.Horizontal" Gap="0.5rem" Radzen.AlignItems="Radzen.Radzen.AlignItems.Center">
+            <RadzenButton Text="Save" Click=@(() => SaveCategory(ds)) Style="width: 80px;" />
+        </RadzenStack>
+    </RadzenStack>
+    );
+    }
+
+    protected void SaveCategory(Radzen.DialogService ds, Document? doc = null)
+    {
+        var cat = DB.FAQs.Select(x => x.Question == Question).FirstOrDefault();
+        bool check = false;
+
+        if (cat == null || (doc != null && cat.ObjectId == doc.ObjectId)) check = true;
+
+        if (check)
+        {
+            if (doc == null) doc = new Document { ObjectId = Guid.NewGuid().ToString() };
+            doc.Question = Question;
+            doc.Answer = Answer;
+            DB.FAQs.InsertOrUpdate(doc);
+
+            faqs = DB.FAQs.SelectAll();
+            visible = false;
+            StateHasChanged();
+            ds.Close(true);
+        }
+        else
+        {
+            visible = true;
+            ds.Refresh();
+            StateHasChanged();
+        }
+    }
+}

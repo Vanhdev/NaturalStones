@@ -42,15 +42,14 @@
 
   <ItemGroup>
     <PackageReference Include="Blazored.LocalStorage" Version="4.4.0" />
+    <PackageReference Include="MudBlazor" Version="6.16.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Newtonsoft.Json.Bson" Version="1.0.2" />
     <PackageReference Include="Radzen.Blazor" Version="4.23.8" />
-    <PackageReference Include="Smart.Blazor" Version="17.0.35" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="app_data\MainDB\Collections\" />
     <Folder Include="Assets\" />
   </ItemGroup>
 

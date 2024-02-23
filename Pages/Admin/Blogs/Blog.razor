@@ -3,61 +3,38 @@
 @layout AdminLayout
 @inherits Admin
 
-<div class="row">
-    <div class="col-md-4 p-3">
-        <RadzenCard>
-            <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Upload image</RadzenText>
-            <RadzenUpload Multiple="false" Accept="image/*" Url="Api/Upload/Blog-image" Complete=@(args => OnComplete(args)) class="w-100" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "select file" }})" />
-        </RadzenCard>
-    </div>
-    <div class="col-md-6 p-3">
-        <RadzenCard>
-            <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Title</RadzenText>
-            <RadzenTextBox @bind-Value=@title Placeholder="Enter blog title" class="w-100" aria-label="Blog title textbox" />
-        </RadzenCard>
-    </div>
-    <div class="col-md-2 p-3" style="text-align:center">
-        <RadzenButton Click=@OnClick Text="save" ButtonStyle="ButtonStyle.Primary" Style="top:50%; transform: translateY(-50%);" />
-    </div>
-</div>
+<PageTitle>Admin Blog</PageTitle>
 
-<RadzenHtmlEditor @bind-Value=@htmlValue style="height: 700px;" UploadUrl="Api/Upload/Blog-image" />
-
-@if (blog != null)
+@if (loggedIn)
 {
-    <div class="container">
-        <div class="my-4 my-lg-4">
-            <div class="nav-0 single-blog" style="margin-bottom:20px;">
-                <div>
-                    <a>
-                        <img src="@blog.ImageUrl" alt="" class="w-100">
-                    </a>
-                </div>
-            </div>
-            <h2 class="font-23 semi-font text-center"><a class="fables-main-text-color fables-second-hover-color">@blog.Title</a></h2>
-            <div class="fables-forth-text-color fables-blog-date">
-                <div class="row">
-                    <div class="col-12 col-md-9 col-lg-10 pt-2">
-                        <span class="fables-icondata fables-second-text-color mr-1"></span>
-                        <span class="mr-3">@String.Format("{0:dd MMMM, yyyy}", blog.PublishTime) </span>
-                    </div>
-                </div>
-
-            </div>
-            <div style="margin-top:20px;">
-                @((MarkupString)blog.Content)
-            </div>
+    <div class="row">
+        <div class="col-md-4 p-3">
+            <RadzenCard>
+                <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Upload image</RadzenText>
+                <RadzenUpload Multiple="false" Accept="image/*" Url="Api/Upload/Image" Complete=@(args => OnComplete(args)) class="w-100" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "select file" }})" />
+            </RadzenCard>
         </div>
-
-        <div class="my-4 my-lg-5 text-center">
-            <a href="/blogs"
-               class="fables-forth-text-color fables-second-hover-color page-a fables-third-background-color px-4 px-md-5 py-3">
-                <span class="underline">More blogs</span>
-                <span class="fables-iconarrow-right"></span>
-            </a>
+        <div class="col-md-6 p-3">
+            <RadzenCard>
+                <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Title</RadzenText>
+                <RadzenTextBox @bind-Value=@title Placeholder="Enter blog title" class="w-100" aria-label="Blog title textbox" />
+            </RadzenCard>
         </div>
-
+        <div class="col-md-2 p-3" style="text-align:center">
+            <RadzenButton Click=@OnClick Text="Save" ButtonStyle="ButtonStyle.Primary" Style="top:50%; transform: translateY(-50%);" />
+        </div>
     </div>
+    <RadzenCard>
+        <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Short description</RadzenText>
+        <RadzenTextArea @bind-Value=@shortDes Placeholder="Enter blog short description" class="w-100" aria-label="Blog short description textbox" Style="height:150px" />
+    </RadzenCard>
+    <RadzenHtmlEditor @bind-Value=@htmlValue style="height: 700px;" UploadUrl="Api/Upload/Image" />
+
+    @if (blog != null)
+    {
+        <iframe src="/blogs/@blog.ObjectId" title="Preview blog">
+        </iframe>
+    }
 }
 
 
@@ -67,6 +44,7 @@
 
     string title = "";
     string htmlValue = "";
+    string shortDes = "";
     Document? blog;
 
     protected override void OnInitialized()
@@ -76,6 +54,7 @@
             blog = DB.Blogs.Find(ID);
             title = blog.Title;
             htmlValue = blog.Content;
+            shortDes = blog.ShortDescription;
 
             StateHasChanged();
         }
@@ -83,10 +62,11 @@
 
     protected async Task OnClick()
     {
-        if (blog == null) blog = new Document {ObjectId = Guid.NewGuid().ToString()};
+        if (blog == null) blog = new Document { ObjectId = Guid.NewGuid().ToString() };
         blog.Title = title;
         blog.Content = htmlValue;
         blog.PublishTime = DateTime.Today;
+        blog.ShortDescription = shortDes;
 
         DB.Blogs.Insert(blog);
         StateHasChanged();

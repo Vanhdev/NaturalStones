@@ -1,0 +1,42 @@
+﻿@page "/admin/estimates"
+@layout AdminLayout
+@inherits Admin
+
+<PageTitle>Admin Estimates</PageTitle>
+
+@if (loggedIn)
+{
+    <RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="5" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
+                    Data="@estimates" TItem="Document" LogicalFilterOperator="LogicalFilterOperator.Or">
+        <Columns>
+            <RadzenDataGridColumn TItem="Document" Property="Name" Sortable="false" Filterable="false" Title="Customer Name" Frozen="true" Width="80px" TextAlign="TextAlign.Center" />
+            <RadzenDataGridColumn TItem="Document" Property="Email" Title="Customer Email" Filterable="false" Width="160px" Frozen="true" Sortable="false" TextAlign="TextAlign.Center" />
+            <RadzenDataGridColumn TItem="Document" Property="Subject" Title="Subject" Filterable="false" Width="160px" Frozen="true" Sortable="false" TextAlign="TextAlign.Center" />
+            <RadzenDataGridColumn TItem="Document" Property="Message" Title="Message" Filterable="false" Width="160px" Frozen="true" Sortable="false" TextAlign="TextAlign.Center" />
+            <RadzenDataGridColumn TItem="Document" Sortable="false" Filterable="false" Width="80px" Frozen="true">
+                <Template Context="data">
+                    <RadzenButton Icon="visibility" ButtonStyle="ButtonStyle.Light" Radzen.Variant="Radzen.Variant.Flat" Size="ButtonSize.Medium" Click="@(args => View(data.ObjectId))" @onclick:stopPropagation="true">
+                    </RadzenButton>
+                </Template>
+            </RadzenDataGridColumn>
+        </Columns>
+    </RadzenDataGrid>
+}
+
+@code {
+    DocumentList estimates;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        estimates = DB.Estimates.SelectAll();
+
+        StateHasChanged();
+    }
+
+    protected void View(string ID)
+    {
+        Navigation.NavigateTo($"/admin/estimate/{ID}");
+    }
+}

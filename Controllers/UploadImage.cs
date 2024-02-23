@@ -17,12 +17,12 @@ namespace NaturalStones.Controllers
             this.environment = environment;
         }
 
-        [HttpPost("Blog-image")]
+        [HttpPost("Image")]
         public IActionResult Image(IFormFile file)
         {
             try
             {
-                var fileName = $"{Guid.NewGuid()}{Path.GetFileName(file.FileName)}{Path.GetExtension(file.FileName)}";
+                var fileName = $"{Guid.NewGuid()}{Path.GetFileName(file.FileName)}";
 
                 if (!Directory.Exists($"{Directory.GetCurrentDirectory()}/Assets/Images"))
                 {
@@ -51,7 +51,7 @@ namespace NaturalStones.Controllers
         {
             try
             {
-                var fileName = $"{Guid.NewGuid()}{Path.GetFileName(file.FileName)}{Path.GetExtension(file.FileName)}";
+                var fileName = $"{Guid.NewGuid()}{Path.GetFileName(file.FileName)}";
 
                 if (!Directory.Exists($"{Directory.GetCurrentDirectory()}/Assets/Gallery"))
                 {
@@ -83,7 +83,7 @@ namespace NaturalStones.Controllers
                 List<string> urls = new List<string>();
                 foreach(var file in files)
                 {
-                    var fileName = $"{Guid.NewGuid()}{Path.GetFileName(file.FileName)}{Path.GetExtension(file.FileName)}";
+                    var fileName = $"{Guid.NewGuid()}{Path.GetFileName(file.FileName)}";
 
                     if (!Directory.Exists($"{Directory.GetCurrentDirectory()}/Assets/Images"))
                     {
